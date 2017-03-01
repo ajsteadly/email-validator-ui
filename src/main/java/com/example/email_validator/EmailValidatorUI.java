@@ -1,3 +1,9 @@
+/**
+ * CSCI 3130 - Assignment 3
+ * 
+ * I have modified the default Vaadin application.
+ */
+
 package com.example.email_validator;
 
 import javax.servlet.annotation.WebServlet;
@@ -12,33 +18,27 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-/**
- * This UI is the application entry point. A UI may either represent a browser window 
- * (or tab) or some part of a html page where a Vaadin application is embedded.
- * <p>
- * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be 
- * overridden to add component to the user interface and initialize non-component functionality.
- */
-
-//test comment
-
 @Theme("mytheme")
-public class MyUI extends UI {
+public class EmailValidatorUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
         
         final TextField name = new TextField();
-        name.setCaption("Type your name here:");
+        name.setCaption("Enter email address:");
 
-        Button button = new Button("Click Me");
+        Button button = new Button("Validate");
+        Label label = new Label();
+        
         button.addClickListener( e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue() 
-                    + ", it works!"));
+        	if (EmailValidator.validate(name.getValue()))
+            	label.setCaption("Email valid, passed all tests.");
+            else
+            	label.setCaption("Email invalid, did not pass all tests.");
         });
         
-        layout.addComponents(name, button);
+        layout.addComponents(name, button, label);
         layout.setMargin(true);
         layout.setSpacing(true);
         
@@ -46,7 +46,7 @@ public class MyUI extends UI {
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
+    @VaadinServletConfiguration(ui = EmailValidatorUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }
